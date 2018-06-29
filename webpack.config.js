@@ -8,7 +8,7 @@ module.exports = {
         "index": "./example/basic.tsx"
     },
     output: {
-        "path": path.join(__dirname, "dist"),
+        "path": path.join(__dirname, "dist-sample"),
         "filename": "[name].bundle.js",
     },
     module: {
