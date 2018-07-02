@@ -2,7 +2,7 @@ import React from "react"
 import {inject} from "mobx-react"
 
 @inject('mapStore')
-export class CustomMarker extends React.PureComponent<any>{
+export class AbstractMarker extends React.PureComponent<any>{
     ele:any;
     marker;
     map;

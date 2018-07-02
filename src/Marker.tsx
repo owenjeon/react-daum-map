@@ -1,9 +1,9 @@
 import React from "react"
 import {inject} from "mobx-react"
-import {CustomMarker} from "./CustomMarker"
+import {AbstractMarker} from "./CustomMarker"
 
 export const Marker = (props) => {
-    const Comp = props.children ? CustomMarker : BasicMarker
+    const Comp = props.children ? AbstractMarker : BasicMarker
     return <Comp {...props}/>
 }
 

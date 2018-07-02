@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {render} from 'react-dom'
 
-import {MapView, Marker} from "../src"
+import {MapView, AbstractMarker, Marker} from "../src"
 import marker from './marker_mock.json'
 import './basic.pcss'
 class RoomsMap extends Component{
@@ -18,10 +18,11 @@ class RoomsMap extends Component{
                     className={'map'}
                 >
                     {marker.map( (item, i) =>
-                        <Marker coordinate={{latitude: item.lat, longitude: item.lng}} className={'cluster '+this.getCircleSize(item.count)} key={i}>
+                        <AbstractMarker coordinate={{latitude: item.lat, longitude: item.lng}} className={'cluster '+this.getCircleSize(item.count)} key={i}>
                             {item.count}
-                        </Marker>
+                        </AbstractMarker>
                     )}
+                    <Marker coordinate={{latitude: 37.46864206034225, longitude: 126.93997450658118}} />
                 </MapView>
             </div>
         );
