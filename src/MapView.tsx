@@ -2,7 +2,7 @@ import React from "react"
 import ReactDOM from "react-dom"
 import {Provider} from 'mobx-react'
 
-export class MapView extends React.PureComponent<any, any>{
+export class MapView extends React.PureComponent<Props, any>{
 
     static defaultProps = {
         onMapReady:_=>{},
@@ -10,14 +10,14 @@ export class MapView extends React.PureComponent<any, any>{
         onRegionChangeComplete:_=>{}
     }
     private mapEle:any = React.createRef()
+    private controls = new Map();
     public store:any = {}
 
     componentDidMount(){
-        //todo zoom 방식이 아니라 delta 방식으로 바꾸어야 함(react-native-maps와 호환을 위해..)
-        const {center: {lat, lng}, zoomLevel} = this.props.initialOption;
+        const {center: {lat, lng}, level} = this.props.initialOption;
         this.store.map = new daum.maps.Map(this.mapEle.current, {
             center: new daum.maps.LatLng(lat, lng),
-            level: zoomLevel
+            level
         })
         this.initMap()
         this.forceUpdate()
@@ -25,6 +25,7 @@ export class MapView extends React.PureComponent<any, any>{
 
     componentDidUpdate(){
         this.setMinMax()
+        this.setControl()
     }
 
     render(){
@@ -42,10 +43,25 @@ export class MapView extends React.PureComponent<any, any>{
         )
     }
 
+    setControl(){
+        this.props.controls.forEach(v => {
+            this.controls.set(v.control, Object.assign({}, v, {status:this.controls.has(v.control) ? 'override': 'new'}))
+        })
+        this.controls.forEach((v, k)=>{
+            console.log(v);
+            if(v.status === 'old'){
+                this.controls.delete(k);
+                this.store.map.removeControl(k, v.position);
+                return;
+            }
+            if(v.status === 'new') this.store.map.addControl(k, v.position);
+            v.status = 'old';
+        })
+    }
+
     initMap(){
         const map = this.store.map;
-        map.addControl(new daum.maps.MapTypeControl(), daum.maps.ControlPosition.TOPRIGHT);
-        map.addControl(new daum.maps.ZoomControl(), daum.maps.ControlPosition.RIGHT);
+        this.setControl();
         this.getOverlayLayer();
         this.setMinMax();
         this.props.onMapReady(this.regionObj);
@@ -79,5 +95,25 @@ export class MapView extends React.PureComponent<any, any>{
     static mathCenterKey(center){
         return {lat:center.getLat(), lng: center.getLng()};
     }
+}
 
+type latLng = {lat: number,lng: number}
+type bounds = { n: number, e: number, s: number, w: number }
+
+type mapPositionInfo = {
+    bounds: bounds
+    zoomLevel: number
+    center: latLng
+}
+
+interface Props {
+    initialOption: { center: latLng, level?: number }
+    maxZoomLevel?: number
+    minZoomLevel?: number
+    onMapReady?: (info:mapPositionInfo) => void
+    onRegionChange?: (info:mapPositionInfo) => void
+    onRegionChangeComplete?: (info:mapPositionInfo) => void
+    className?: string
+    customMapStyle?: any
+    controls?: { control: Function, position: any}[]
 }

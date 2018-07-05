@@ -4,18 +4,23 @@ import {render} from 'react-dom'
 import {MapView, AbstractMarker, Marker} from "../src"
 import marker from './marker_mock.json'
 import './basic.pcss'
+import {ControlPosition, mapTypeControl, zoomControl} from "../src/controls"
 class RoomsMap extends Component{
     render(){
         return(
             <div className='mapArea'>
                 <MapView
                     initialOption={{
-                        center: {"lat":37.46864206034225,"lng":126.93997450658118}, zoomLevel:2
+                        center: {lat:37.46864206034225,lng:126.93997450658118}, level:2
                     }}
                     minZoomLevel={10}
                     onMapReady={e=>console.log('onMapReady')}
                     onRegionChangeComplete={e=>console.log('onRegionChangeComplete')}
                     className={'map'}
+                    controls={[
+                        {control: zoomControl, position: ControlPosition.RIGHT},
+                        {control: mapTypeControl, position: ControlPosition.TOPRIGHT}
+                    ]}
                 >
                     {marker.map( (item, i) =>
                         <AbstractMarker coordinate={{latitude: item.lat, longitude: item.lng}} className={'cluster '+this.getCircleSize(item.count)} key={i}>
@@ -24,6 +29,7 @@ class RoomsMap extends Component{
                     )}
                     <Marker coordinate={{latitude: 37.46864206034225, longitude: 126.93997450658118}} />
                 </MapView>
+                <div></div>
             </div>
         );
     }

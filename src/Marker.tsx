@@ -28,7 +28,7 @@ export class BasicMarker extends React.Component<any> {
         this.marker.setMap(this.map)
     }
 
-    getSnapshotBeforeUpdate(){
+    componentDidUpdate(){
         const {latitude, longitude} = this.props.coordinate;
         this.marker.position = new daum.maps.LatLng(latitude, longitude)
     }
