@@ -48,7 +48,6 @@ export class MapView extends React.PureComponent<Props, any>{
             this.controls.set(v.control, Object.assign({}, v, {status:this.controls.has(v.control) ? 'override': 'new'}))
         })
         this.controls.forEach((v, k)=>{
-            console.log(v);
             if(v.status === 'old'){
                 this.controls.delete(k);
                 this.store.map.removeControl(k, v.position);
