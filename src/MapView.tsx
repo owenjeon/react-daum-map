@@ -1,6 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import {Provider} from 'mobx-react'
+import {Control} from "./modules/Control"
 
 export class MapView extends React.PureComponent<Props, any>{
 
@@ -38,6 +39,7 @@ export class MapView extends React.PureComponent<Props, any>{
                         this.props.children,
                         this.store.overlay,
                     )}
+                    <Control controls={this.props.controls}/>
                 </React.Fragment>
             </Provider>
         )
