@@ -3,7 +3,7 @@ import {ControlPosition, zoomControl} from "../controls"
 import {inject} from "mobx-react"
 
 @inject('mapStore')
-export class Control extends React.Component<Props & {mapStore: {map:any}}>{
+export class Control extends React.Component<Props & {mapStore?: {map:any}}>{
 
     private controls;
     componentDidMount(){

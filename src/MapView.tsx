@@ -1,6 +1,8 @@
-import React from "react"
+import React, {RefObject} from "react"
 import ReactDOM from "react-dom"
 import {Provider} from 'mobx-react'
+import _ from 'lodash'
+
 import {Control} from "./modules/Control"
 
 export class MapView extends React.PureComponent<Props, any>{
@@ -10,7 +12,7 @@ export class MapView extends React.PureComponent<Props, any>{
         onRegionChange:_=>{},
         onRegionChangeComplete:_=>{}
     }
-    private mapEle:any = React.createRef()
+    private mapEle:RefObject<any> = React.createRef()
     private controls = new Map();
     public store:any = {}
 
@@ -24,9 +26,10 @@ export class MapView extends React.PureComponent<Props, any>{
         this.forceUpdate()
     }
 
-    componentDidUpdate(){
+    componentDidUpdate(prevProps){
         this.setMinMax()
         this.setControl()
+        this.updateCenter(prevProps)
     }
 
     render(){
@@ -82,6 +85,13 @@ export class MapView extends React.PureComponent<Props, any>{
         m.setMap(null)
     }
 
+    updateCenter(prevProps){
+        const {center} = this.props;
+        if(center && !_.isEqual(prevProps.center, center)){
+            this.store.map.setCenter(new daum.maps.LatLng(center.lat, center.lng));
+        }
+    }
+
     setMinMax(){
         this.props.maxZoomLevel && this.store.map.setMinLevel(this.props.maxZoomLevel);
         this.props.minZoomLevel && this.store.map.setMaxLevel(this.props.minZoomLevel);
@@ -116,5 +126,6 @@ interface Props {
     onRegionChangeComplete?: (info:mapPositionInfo) => void
     className?: string
     customMapStyle?: any
-    controls?: { control: Function, position: any}[]
+    controls?: { control: Function, position: any}[],
+    center?: {lat: number, lng: number}
 }
